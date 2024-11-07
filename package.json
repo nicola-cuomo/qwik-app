@@ -1,6 +1,6 @@
 {
-  "name": "my-qwik-empty-starter",
-  "description": "Blank project with routing included",
+  "name": "my-qwik-book-services",
+  "description": "Book a service",
   "engines": {
     "node": "^18.17.0 || ^20.3.0 || >=21.0.0"
   },
@@ -53,5 +53,8 @@
     "vite": "5.3.5",
     "vite-tsconfig-paths": "^4.2.1"
   },
-  "nx": {}
+  "nx": {},
+  "dependencies": {
+    "date-fns": "^4.1.0"
+  }
 }
