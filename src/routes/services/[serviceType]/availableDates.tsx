@@ -31,10 +31,9 @@ export default component$(({ selectedDate }: AvailableDatesProps) => {
                 selectedDate.value = formattedDate;
               }
             }}
-            style={{
-              backgroundColor:
-                selectedDate.value === formattedDate ? "blue" : "initial",
-              color: selectedDate.value === formattedDate ? "white" : "initial",
+            class={{
+              "bg-blue-500 text-white hover:bg-blue-500":
+                selectedDate.value === formattedDate,
             }}
             disabled={!isAvailable}
           >

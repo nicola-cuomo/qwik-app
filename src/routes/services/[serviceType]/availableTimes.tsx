@@ -1,13 +1,14 @@
 import type { Signal } from "@builder.io/qwik";
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import { addMinutes, getHours, setHours, setMinutes, format } from "date-fns";
 import { Button } from "~/components/ui/button/button";
 
-type AvailableTimesProps = {
-  selectedTime: Signal<string | undefined>;
+type TimeWithAvailability = {
+  time: string;
+  isAvailable: boolean;
 };
 
-export default component$(({ selectedTime }: AvailableTimesProps) => {
+function hoursWithAvailability(): TimeWithAvailability[] {
   let date = new Date();
   const openHour = 8;
   const closeHour = 19;
@@ -17,28 +18,37 @@ export default component$(({ selectedTime }: AvailableTimesProps) => {
   const stopPauseHour = 14;
   const serviceDurationMinutes = 45;
   const times = [];
-
   while (getHours(date) < closeHour) {
     if (date.getHours() < startPauseHour || date.getHours() >= stopPauseHour) {
       times.push(format(date, "HH:mm"));
     }
     date = addMinutes(date, serviceDurationMinutes);
   }
+  return times.map((time) => ({ time, isAvailable: Math.random() > 0.5 }));
+}
 
-  const timesWithAvailability = times.map((time) => ({
-    time,
-    isAvailable: Math.random() > 0.5,
-  }));
+type AvailableTimesProps = {
+  selectedTime: Signal<string | undefined>;
+};
+
+export default component$(({ selectedTime }: AvailableTimesProps) => {
+  const timesWithAvailability = useSignal<TimeWithAvailability[]>(
+    hoursWithAvailability(),
+  );
 
   return (
     <>
-      {timesWithAvailability.map((timeWithAvailability, index) => {
+      {timesWithAvailability.value.map((timeWithAvailability) => {
         const { time, isAvailable } = timeWithAvailability;
         return (
           <Button
-            key={index}
+            key={time}
             disabled={isAvailable}
             onClick$={() => (selectedTime.value = time)}
+            class={{
+              "bg-blue-500 text-white hover:bg-blue-500":
+                selectedTime.value === time,
+            }}
           >
             {time}
           </Button>
